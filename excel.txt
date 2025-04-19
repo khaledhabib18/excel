@@ -1,27 +1,35 @@
 Private Sub Worksheet_Change(ByVal Target As Range)
-    Dim row As Long
-    If Target.Column = 1 Or Target.Column = 2 Then ' عمود المدين أو الدائن
+    If Target.Column = 1 Or Target.Column = 2 Then ' مدين أو دائن
         Application.EnableEvents = False
         
-        row = Target.Row
+        Dim lastRow As Long
+        lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+        
+        Dim i As Long
         Dim debit As Double
         Dim credit As Double
+        Dim balance As Double
         
-        ' لو في أرقام، خدهم
-        If IsNumeric(Cells(row, 1).Value) Then
-            debit = Cells(row, 1).Value
-        Else
+        balance = 0 ' الرصيد التراكمي
+        
+        For i = 2 To lastRow ' نفترض أول صف فيه عناوين
             debit = 0
-        End If
-        
-        If IsNumeric(Cells(row, 2).Value) Then
-            credit = Cells(row, 2).Value
-        Else
             credit = 0
-        End If
-        
-        ' الرصيد = المدين - الدائن
-        Cells(row, 3).Value = debit - credit
+            
+            If IsNumeric(Cells(i, 1).Value) Then
+                debit = Cells(i, 1).Value
+            End If
+            
+            If IsNumeric(Cells(i, 2).Value) Then
+                credit = Cells(i, 2).Value
+            End If
+            
+            ' تحديث الرصيد التراكمي
+            balance = balance + (debit - credit)
+            
+            ' وضع الرصيد التراكمي في العمود الثالث
+            Cells(i, 3).Value = balance
+        Next i
         
         Application.EnableEvents = True
     End If
