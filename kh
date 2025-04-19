@@ -1,0 +1,36 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim checkRange As Range
+    Set checkRange = Intersect(Target, Me.Range("A:B")) ' العمود A و B (1 و 2)
+
+    If Not checkRange Is Nothing Then
+        Application.EnableEvents = False
+        
+        Dim lastRow As Long
+        lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+        
+        Dim i As Long
+        Dim debit As Double
+        Dim credit As Double
+        Dim balance As Double
+        
+        balance = 0
+        
+        For i = 2 To lastRow
+            debit = 0
+            credit = 0
+            
+            If IsNumeric(Cells(i, 1).Value) Then
+                debit = Cells(i, 1).Value
+            End If
+            
+            If IsNumeric(Cells(i, 2).Value) Then
+                credit = Cells(i, 2).Value
+            End If
+            
+            balance = balance + (debit - credit)
+            Cells(i, 3).Value = balance
+        Next i
+        
+        Application.EnableEvents = True
+    End If
+End Sub
