@@ -1,0 +1,39 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+    On Error GoTo CleanExit
+    Application.EnableEvents = False
+
+    ' لو التغيير حصل في أي خلية واحدة داخل العمود A أو B فقط
+    If Not Intersect(Target, Columns("A")) Is Nothing Or Not Intersect(Target, Columns("B")) Is Nothing Then
+        
+        Dim lastRow As Long
+        lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+        
+        Dim i As Long
+        Dim debit As Double
+        Dim credit As Double
+        Dim balance As Double
+        balance = 0
+        
+        For i = 2 To lastRow
+            ' تأكد من قراءة الخلايا كأرقام أو صفر
+            If Trim(Cells(i, 1).Value) = "" Or Not IsNumeric(Cells(i, 1).Value) Then
+                debit = 0
+            Else
+                debit = Cells(i, 1).Value
+            End If
+            
+            If Trim(Cells(i, 2).Value) = "" Or Not IsNumeric(Cells(i, 2).Value) Then
+                credit = 0
+            Else
+                credit = Cells(i, 2).Value
+            End If
+            
+            ' الرصيد التراكمي
+            balance = balance + (debit - credit)
+            Cells(i, 3).Value = balance
+        Next i
+    End If
+
+CleanExit:
+    Application.EnableEvents = True
+End Sub
