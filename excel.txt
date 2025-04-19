@@ -1,0 +1,28 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim row As Long
+    If Target.Column = 1 Or Target.Column = 2 Then ' عمود المدين أو الدائن
+        Application.EnableEvents = False
+        
+        row = Target.Row
+        Dim debit As Double
+        Dim credit As Double
+        
+        ' لو في أرقام، خدهم
+        If IsNumeric(Cells(row, 1).Value) Then
+            debit = Cells(row, 1).Value
+        Else
+            debit = 0
+        End If
+        
+        If IsNumeric(Cells(row, 2).Value) Then
+            credit = Cells(row, 2).Value
+        Else
+            credit = 0
+        End If
+        
+        ' الرصيد = المدين - الدائن
+        Cells(row, 3).Value = debit - credit
+        
+        Application.EnableEvents = True
+    End If
+End Sub
