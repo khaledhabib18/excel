@@ -1,0 +1,35 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+    On Error GoTo CleanExit
+    Application.EnableEvents = False
+
+    ' لو التغيير حصل في أي خلية في العمود A أو B
+    If Not Intersect(Target, Me.Range("A:A")) Is Nothing Or Not Intersect(Target, Me.Range("B:B")) Is Nothing Then
+        Dim lastRow As Long
+        lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+        
+        Dim i As Long
+        Dim debit As Double
+        Dim credit As Double
+        Dim balance As Double
+        balance = 0
+        
+        For i = 2 To lastRow
+            debit = 0
+            credit = 0
+            
+            If IsNumeric(Cells(i, 1).Value) Then
+                debit = Cells(i, 1).Value
+            End If
+            
+            If IsNumeric(Cells(i, 2).Value) Then
+                credit = Cells(i, 2).Value
+            End If
+            
+            balance = balance + (debit - credit)
+            Cells(i, 3).Value = balance
+        Next i
+    End If
+
+CleanExit:
+    Application.EnableEvents = True
+End Sub
